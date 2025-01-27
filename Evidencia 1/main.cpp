@@ -1,110 +1,130 @@
+/*
+ * License: Educational use only.
+ * File: main.cpp
+ * Description: E1. Actividad Integradora 1
+ * Authors:  
+ Luis Angel Alba Alfaro - A01640314 
+ Fernando GarcÌa Tejeda - A01642285 
+ Bruno M·rquez Puig - A00834415 
+ *Created: January 19, 2025
+ */
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <filesystem>
 #include <algorithm>
 
 using namespace std;
 
-// Funci√≥n para leer el contenido de un archivo
+// FunciÛn para leer el contenido de un archivo
 string readFile(const string& fileName) {
     ifstream file(fileName);
-    string content((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    return content;
+    return string((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
 }
 
-// Funci√≥n para encontrar si una secuencia est√° contenida en otra
+// FunciÛn para encontrar si una secuencia est· contenida en otra
 pair<bool, size_t> contains(const string& text, const string& pattern) {
     size_t pos = text.find(pattern);
-    return {pos != string::npos, pos + 1}; // Ajustar posici√≥n a base 1
+    return { pos != string::npos, pos != string::npos ? pos + 1 : 0 };
 }
 
-// Funci√≥n para encontrar el pal√≠ndromo m√°s largo en un texto
-pair<size_t, string> findLongestPalindrome(const string& text) {
-    size_t n = text.size();
-    size_t start = 0, maxLength = 1;
+// FunciÛn para encontrar el palÌndromo m·s largo en un texto
+pair<size_t, string> findLongestPalindrome(const string& s) {
+	//Verificamos si el string esta vacio
+    if (s.empty()) return { 0, "" };
 
-    vector<vector<bool>> dp(n, vector<bool>(n, false));
+    int n = s.size();
+    int maxLen = 1;
+    int start = 0;
 
-    // Todas las subcadenas de un solo car√°cter son pal√≠ndromos
-    for (size_t i = 0; i < n; ++i) {
-        dp[i][i] = true;
-    }
-
-    // Pal√≠ndromos de longitud 2
-    for (size_t i = 0; i < n - 1; ++i) {
-        if (text[i] == text[i + 1]) {
-            dp[i][i + 1] = true;
-            start = i;
-            maxLength = 2;
-        }
-    }
-
-    // Pal√≠ndromos de longitud > 2
-    for (size_t len = 3; len <= n; ++len) {
-        for (size_t i = 0; i < n - len + 1; ++i) {
-            size_t j = i + len - 1;
-            if (text[i] == text[j] && dp[i + 1][j - 1]) {
-                dp[i][j] = true;
-                start = i;
-                maxLength = len;
+    // PalÌndromos de longitud 2
+    for (int i = 0; i < n; i++) {
+        int l = i, r = i;
+        while (l >= 0 && r < n && s[l] == s[r]) {
+            if (r - l + 1 > maxLen) {
+                maxLen = r - l + 1;
+                start = l;
             }
+            l--;
+            r++;
         }
     }
 
-    return {start + 1, text.substr(start, maxLength)}; // Ajustar posiciones a base 1
+    // PalÌndromos de longitud > 2
+    for (int i = 0; i < n; i++) {
+        int l = i, r = i + 1;
+        while (l >= 0 && r < n && s[l] == s[r]) {
+            if (r - l + 1 > maxLen) {
+                maxLen = r - l + 1;
+                start = l;
+            }
+            l--;
+            r++;
+        }
+    }
+
+    return { start + 1, s.substr(start, maxLen) };  // Ajustar posiciones a base 1
 }
 
-// Funci√≥n para encontrar el substring com√∫n m√°s largo entre dos textos
-pair<size_t, string> longestCommonSubstring(const string& text1, const string& text2) {
-    size_t n1 = text1.size(), n2 = text2.size();
-    vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0));
+// FunciÛn para encontrar el substring com˙n m·s largo entre dos textos
+pair<size_t, string> longestCommonSubstring(const string& s1, const string& s2) {
+    int m = s1.length(), n = s2.length();
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+    int max_len = 0, end_pos = 0;
 
-    size_t maxLength = 0, endPos = 0;
-
-    for (size_t i = 1; i <= n1; ++i) {
-        for (size_t j = 1; j <= n2; ++j) {
-            if (text1[i - 1] == text2[j - 1]) {
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (s1[i - 1] == s2[j - 1]) {
                 dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endPos = i - 1;
+                if (dp[i][j] > max_len) {
+                    max_len = dp[i][j];
+                    end_pos = i - 1;
                 }
             }
         }
     }
 
-    return {endPos - maxLength + 2, text1.substr(endPos - maxLength + 1, maxLength)}; // Ajustar posiciones a base 1
+    if (max_len == 0) return { 0, "" };
+    return { end_pos - max_len + 2, s1.substr(end_pos - max_len + 1, max_len) };
 }
 
 int main() {
-    // Leer archivos
-    string transmission1 = readFile("transmission1.txt");
-    string transmission2 = readFile("transmission2.txt");
-    vector<string> mcodes = {readFile("mcode1.txt"), readFile("mcode2.txt"), readFile("mcode3.txt")};
 
-    // Parte 1: Verificar si los c√≥digos maliciosos est√°n contenidos en las transmisiones
+	// Cambiar directorio de trabajo
+    filesystem::current_path("C:/VS/PROJECTS/EXAMENES/Examenes/Examenes/Evidencia 1");
+    
+	// Leer archivos
+    string t1 = readFile("archivos/transmission1.txt");
+    string t2 = readFile("archivos/transmission2.txt");
+
+    vector<string> mcodes = {
+        readFile("archivos/mcode1.txt"),
+        readFile("archivos/mcode2.txt"),
+        readFile("archivos/mcode3.txt")
+    };
+
+    // Parte 1: Verificar si los cÛdigos maliciosos est·n contenidos en las transmisiones
     cout << "Parte 1:\n";
-    for (size_t i = 0; i < mcodes.size(); ++i) {
-        auto [found1, pos1] = contains(transmission1, mcodes[i]);
-        auto [found2, pos2] = contains(transmission2, mcodes[i]);
-
-        cout << (found1 ? "true " + to_string(pos1) : "false") << endl;
-        cout << (found2 ? "true " + to_string(pos2) : "false") << endl;
+    for (auto& code : mcodes) {
+        auto [found1, pos1] = contains(t1, code);
+        auto [found2, pos2] = contains(t2, code);
+        cout << (found1 ? "true " + to_string(pos1) : "false") << "\n"
+            << (found2 ? "true " + to_string(pos2) : "false") << "\n";
     }
 
-    // Parte 2: Encontrar el pal√≠ndromo m√°s largo en cada transmisi√≥n
+    // Parte 2: Encontrar el palÌndromo m·s largo en cada transmisiÛn
     cout << "\nParte 2:\n";
-    auto [start1, palindrome1] = findLongestPalindrome(transmission1);
-    auto [start2, palindrome2] = findLongestPalindrome(transmission2);
+    auto [s1, p1] = findLongestPalindrome(t1);
+    cout << s1 << " " << s1 + p1.length() - 1 << " " << p1 << endl;
+    auto [s2, p2] = findLongestPalindrome(t2);
+    cout << s2 << " " << s2 + p2.length() - 1 << " " << p2 << endl;
 
-    cout << start1 << " " << start1 + palindrome1.size() - 1 << " " << palindrome1 << endl;
-    cout << start2 << " " << start2 + palindrome2.size() - 1 << " " << palindrome2 << endl;
-
-    // Parte 3: Encontrar el substring com√∫n m√°s largo entre las dos transmisiones
+	// Parte 3 Encontrar el substring com˙n m·s largo entre las transmisiones
     cout << "\nParte 3:\n";
-    auto [commonStart, commonSubstring] = longestCommonSubstring(transmission1, transmission2);
-    cout << commonStart << " " << commonStart + commonSubstring.size() - 1 << " " << commonSubstring << endl;
+    auto [cs, comm] = longestCommonSubstring(t1, t2);
+    cout << cs << " " << cs + comm.length() - 1 << " " << comm << endl;
 
     return 0;
 }
