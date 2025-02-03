@@ -1,5 +1,4 @@
 /*
- * Actividad 3.2 Implementación de "Dijkstra and Floyd"
  * Descripción breve del programa:
  * Implementación de los algoritmos de Dijkstra y Floyd-Warshall para encontrar las distancias más cortas en un grafo dirigido
  * representado como una matriz de adjacencia de un grafo dirijido.
