@@ -1,3 +1,15 @@
+/*
+ * Descripción breve del programa:
+ * implementacion de algoritmos de geometria computacional para encontrar la distancia mas corta entre dos puntos en un conjunto de puntos 
+ * de plano cartesiano.
+ * 
+ *    Autores: Luis Angel Alba Alfaro - A01640314
+ *             Fernando García Tejeda - A01642285
+ *             Bruno Márquez Puig     - A00834415
+ * Fecha: 2 de febrero del 2025
+ */
+
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -86,10 +98,10 @@ double encontrarEnFranja(vector<Punto>& franja, double distanciaMin) {
  * 
  * Complejidad: O(n log n)
  * 
- * puntos Vector de puntos ordenados por X.
- * izquierda Índice izquierdo del rango.
- * derecha Índice derecho del rang
- * Distancia mínima encontrada.
+ *  puntos Vector de puntos ordenados por X.
+ *  izquierda Índice izquierdo del rango.
+ *  derecha Índice derecho del rango.
+ *  Distancia mínima encontrada.
  */
 double encontrarParMasCercanoRecursivo(vector<Punto>& puntos, int izquierda, int derecha) {
     if (derecha - izquierda <= 3) {
@@ -112,12 +124,12 @@ double encontrarParMasCercanoRecursivo(vector<Punto>& puntos, int izquierda, int
 }
 
 /**
- *  Encuentra la distancia más corta entre dos puntos en un conjunto de puntos.
+ * @brief Encuentra la distancia más corta entre dos puntos en un conjunto de puntos.
  * 
  * Complejidad: O(n log n)
  * 
- *  puntos Vector de puntos.
- *  Distancia mínima encontrada.
+ * @param puntos Vector de puntos.
+ * @return Distancia mínima encontrada.
  */
 double encontrarParMasCercano(vector<Punto>& puntos) {
     sort(puntos.begin(), puntos.end(), compararX);
