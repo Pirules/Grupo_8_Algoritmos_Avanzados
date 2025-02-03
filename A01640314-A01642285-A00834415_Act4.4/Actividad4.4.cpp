@@ -47,7 +47,7 @@ int busquedaBinariaAleatoria(vector<int>& arreglo, int izquierda, int derecha, i
 
 int main() {
     srand(time(0)); // Inicializa la semilla para la aleatorización
-    
+	cout << "Input: "<<endl;
     int objetivo;
     cin >> objetivo;
     
