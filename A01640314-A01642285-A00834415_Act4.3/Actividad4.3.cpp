@@ -138,6 +138,7 @@ double encontrarParMasCercano(vector<Punto>& puntos) {
 
 int main() {
     int n;
+    cout << "Input: " << endl;
     cin >> n;
     vector<Punto> puntos(n);
     for (int i = 0; i < n; ++i) {
