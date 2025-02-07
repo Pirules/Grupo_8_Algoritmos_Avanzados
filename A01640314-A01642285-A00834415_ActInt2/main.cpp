@@ -48,7 +48,7 @@ vector<pair<char, char>> kruskalMST(const vector<vector<double>>& graph) {
     for (int i = 0; i < N; i++) {
         for (int j = i + 1; j < N; j++) {
             if (graph[i][j] > 0) {
-                edges.push_back({i, j, graph[i][j]});
+                edges.push_back({ i, j, graph[i][j] });
             }
         }
     }
@@ -61,7 +61,7 @@ vector<pair<char, char>> kruskalMST(const vector<vector<double>>& graph) {
 
     for (const auto& edge : edges) {
         if (find(parent, edge.u) != find(parent, edge.v)) {
-            result.push_back({char('A' + edge.u), char('A' + edge.v)});
+            result.push_back({ char('A' + edge.u), char('A' + edge.v) });
             unionSets(parent, rank, edge.u, edge.v);
         }
     }
@@ -90,13 +90,13 @@ pair<double, vector<int>> tsp(const vector<vector<double>>& graph) {
         }
     } while (next_permutation(cities.begin() + 1, cities.end()));
 
-    return {minCost, bestPath};
+    return { minCost, bestPath };
 }
 
 // Búsqueda de la central más cercana
 pair<int, int> findNearestCentral(pair<int, int> newHouse, const vector<pair<int, int>>& centrals) {
     double minDist = numeric_limits<double>::max();
-    pair<int, int> nearestCentral = {-1, -1};
+    pair<int, int> nearestCentral = { -1, -1 };
 
     for (const auto& central : centrals) {
         double dist = sqrt(pow(newHouse.first - central.first, 2) + pow(newHouse.second - central.second, 2));
@@ -127,12 +127,24 @@ int main() {
         }
     }
 
+    // Leer coordenadas
     for (int i = 0; i < N; i++) {
-        cin >> centrals[i].first >> centrals[i].second;
+        char c;
+        cin >> c;
+        cin >> centrals[i].first;
+        cin >> c;
+        cin >> centrals[i].second;
+        cin >> c;
     }
 
+    // Leer corrdenadas
     pair<int, int> newHouse;
-    cin >> newHouse.first >> newHouse.second;
+    char c;
+    cin >> c;
+    cin >> newHouse.first;
+    cin >> c;
+    cin >> newHouse.second;
+    cin >> c;
 
     // Solución al MST (fibra óptica)
     auto mst = kruskalMST(distances);
